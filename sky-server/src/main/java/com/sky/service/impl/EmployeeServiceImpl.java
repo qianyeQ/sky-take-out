@@ -71,6 +71,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
+    /**
+     * 新增员工
+     * @param employeeDTO
+     */
     @Override
     public void save(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
@@ -109,6 +113,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new PageResult(page.getTotal(), page.getResult());
     }
 
+    /**
+     * 启用禁用员工
+     * @param status
+     * @param id
+     */
     @Override
     public void startOrStop(Integer status, Long id) {
 
@@ -120,6 +129,32 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .status(status)
                 .id(id)
                 .build();
+
+        employeeMapper.update(employee);
+    }
+
+    /**
+     * 根据id查询员工
+     * @param id
+     * @return
+     */
+    @Override
+    public Employee getById(Long id) {
+        Employee employee = employeeMapper.getById(id);
+        employee.setPassword("****");
+        return employee;
+    }
+
+    /**
+     * 修改员工信息
+     * @param employeeDTO
+     */
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.update(employee);
     }
