@@ -6,3 +6,11 @@ sky:
     database: sky_take_out
     username: root
     password: 123456
+  alioss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    # 真实值取自 Windows 环境变量，切勿把密钥写回本文件
+    access-key-id: ${OSS_ACCESS_KEY_ID}
+    access-key-secret: ${OSS_ACCESS_KEY_SECRET}
+    bucket-name: qy-java-sky
+
+
