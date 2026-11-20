@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,9 +50,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                     .collect(Collectors.joining(",")));
         }
         //判断菜品或者套餐在购物车中是否存在
-        ShoppingCart cart = shoppingCartMapper.list(shoppingCart);
-        if(cart != null && cart.getNumber() > 0){
+        List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
+        if(list != null && !list.isEmpty()){
             //如果存在则直接将菜品或者套餐的数量在购物车中加一
+            ShoppingCart cart = list.get(0);
             shoppingCartMapper.updateNumberById(cart);
         }else{
             //判断是菜品还是套餐
@@ -71,5 +73,18 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             //如果不存在于购物车则插入数据
             shoppingCartMapper.save(shoppingCart);
         }
+    }
+
+    /**
+     * 查看购物车
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<ShoppingCart> list(Long userId) {
+        ShoppingCart shoppingCart = ShoppingCart.builder()
+                .userId(userId)
+                .build();
+        return shoppingCartMapper.list(shoppingCart);
     }
 }
