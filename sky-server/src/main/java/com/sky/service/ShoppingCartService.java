@@ -18,5 +18,11 @@ public interface ShoppingCartService {
      * @param userId
      * @return
      */
-    List<ShoppingCart> list(Long userId);
+    List<ShoppingCart> showShoppingCart(Long userId);
+
+    /**
+     * 清空购物车
+     * @param userId
+     */
+    void cleanShoppingCart(Long userId);
 }

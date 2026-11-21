@@ -81,10 +81,19 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
      * @return
      */
     @Override
-    public List<ShoppingCart> list(Long userId) {
+    public List<ShoppingCart> showShoppingCart(Long userId) {
         ShoppingCart shoppingCart = ShoppingCart.builder()
                 .userId(userId)
                 .build();
         return shoppingCartMapper.list(shoppingCart);
+    }
+
+    /**
+     * 清空购物车
+     * @param userId
+     */
+    @Override
+    public void cleanShoppingCart(Long userId) {
+        shoppingCartMapper.deleteByUserId(userId);
     }
 }

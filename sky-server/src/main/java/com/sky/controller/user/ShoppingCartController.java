@@ -40,7 +40,21 @@ public class ShoppingCartController {
     public Result<List<ShoppingCart>> list(){
         Long userId = BaseContext.getCurrentId();
         log.info("查看购物车，用户id为{}", userId);
-        List<ShoppingCart> shoppingCartList = shoppingCartService.list(userId);
+        List<ShoppingCart> shoppingCartList = shoppingCartService.showShoppingCart(userId);
         return Result.success(shoppingCartList);
     }
+
+    /**
+     * 清空购物车
+     * @return
+     */
+    @DeleteMapping("/clean")
+    @ApiOperation("清空购物车")
+    public Result delete(){
+        Long userId = BaseContext.getCurrentId();
+        log.info("清空购物车，用户id为{}", userId);
+        shoppingCartService.cleanShoppingCart(userId);
+        return Result.success();
+    }
+
 }
