@@ -21,6 +21,7 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,7 @@ import org.springframework.web.util.UriUtils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.LocalDateTime;
@@ -62,8 +64,8 @@ public class OrderServiceImpl implements OrderService {
     private String shopAddress;
     @Value("${sky.baidu.ak}")
     private String ak;
-    public static String URL = "https://api.map.baidu.com/geocoding/v3/?";
-
+    @Autowired
+    private WebSocketServer WebSocketServer;
     /**
      * 用户下单
      * <p>
@@ -196,6 +198,14 @@ public class OrderServiceImpl implements OrderService {
                 .checkoutTime(LocalDateTime.now())
                 .build();
 
+        //通过websocket向客户端浏览器推送消息type orderId content
+        Map<String,Object> map = new HashMap();
+        map.put("type",1);
+        map.put("orderId",ordersDB.getId());
+        map.put("content","订单号："+outTradeNo);
+
+        String jsonString = JSON.toJSONString(map);
+        WebSocketServer.sendToAllClient(jsonString);
         orderMapper.update(orders);
     }
 

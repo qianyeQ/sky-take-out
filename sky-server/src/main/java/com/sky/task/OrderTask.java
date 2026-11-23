@@ -27,8 +27,8 @@ public class OrderTask {
     /**
      * 处理超时订单
      */
-//    @Scheduled(cron = "0 * * * * ?")
-    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0 * * * * ?")
+//    @Scheduled(cron = "0/5 * * * * ?")
     public void processTimeOut() {
         log.info("定时处理超时订单：{}", LocalDateTime.now());
         //获取所有状态为未支付并且超时的订单
@@ -50,8 +50,8 @@ public class OrderTask {
     /**
      * 处理一直处于派送中的订单
      */
-//    @Scheduled(cron = "0 0 1 * * ?")
-    @Scheduled(cron = "1/5 * * * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
+//    @Scheduled(cron = "1/5 * * * * ?")
     public void processDeliveryOrder(){
         log.info("定时处理于派送中的订单：{}",LocalDateTime.now());
         //获取派送中的订单
