@@ -27,15 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.util.UriUtils;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.ServerSocket;
-import java.net.URL;
-import java.net.URLConnection;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -65,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
     @Value("${sky.baidu.ak}")
     private String ak;
     @Autowired
-    private WebSocketServer WebSocketServer;
+    private WebSocketServer webSocketServer;
     /**
      * 用户下单
      * <p>
@@ -205,7 +197,7 @@ public class OrderServiceImpl implements OrderService {
         map.put("content","订单号："+outTradeNo);
 
         String jsonString = JSON.toJSONString(map);
-        WebSocketServer.sendToAllClient(jsonString);
+        webSocketServer.sendToAllClient(jsonString);
         orderMapper.update(orders);
     }
 
@@ -513,6 +505,27 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryTime(LocalDateTime.now())
                 .build();
         orderMapper.update(orders);
+    }
+
+    /**
+     * 客户催单，返回订单数据
+     * @param id
+     * @return
+     */
+    @Override
+    public void reminder(Long id) {
+        Orders orderDB = orderMapper.getById(id);
+        if (orderDB == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        //封装催单提示
+        Map<String,Object> map = new HashMap<>();
+        map.put("type",2);
+        map.put("orderId",orderDB.getId());
+        map.put("content","订单号："+orderDB.getNumber());
+        String jsonString = JSON.toJSONString(map);
+        //通过websocket向客户端浏览器推送消息
+        webSocketServer.sendToAllClient(jsonString);
     }
 
     /**

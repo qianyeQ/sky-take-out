@@ -1,6 +1,7 @@
 package com.sky.service;
 
 import com.sky.dto.*;
+import com.sky.entity.Orders;
 import com.sky.result.PageResult;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
@@ -97,4 +98,11 @@ public interface OrderService {
      * @param id
      */
     void complete(Long id);
+
+    /**
+     * 催单，获取订单
+     * @param id
+     * @return
+     */
+    void reminder(Long id);
 }
