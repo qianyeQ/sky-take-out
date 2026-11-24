@@ -5,7 +5,9 @@ import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -66,4 +68,6 @@ public interface OrderMapper {
     @Select("select * from orders where status = #{status} and order_time < #{orderTime}")
     List<Orders> getByStatusAndOrderTimeLT(Integer status,LocalDateTime orderTime);
 
+    @Select("select ifnull(sum(amount),0) from orders where status = #{status} and order_time between #{begin} and #{end}")
+    Double getTurnOverByTime(Integer status,LocalDateTime begin,LocalDateTime end);
 }
