@@ -33,5 +33,5 @@ public interface UserMapper {
     Integer getUserCountByTime(LocalDateTime endTime);
 
     @Select("select count(*) from user where create_time between #{beginTime} and #{endTime}")
-    Integer getByNewUserCountByTime(LocalDateTime beginTime, LocalDateTime endTime);
+    Integer getNewUserCountByTime(LocalDateTime beginTime, LocalDateTime endTime);
 }
