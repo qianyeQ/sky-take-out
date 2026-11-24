@@ -70,4 +70,5 @@ public interface OrderMapper {
 
     @Select("select ifnull(sum(amount),0) from orders where status = #{status} and order_time between #{begin} and #{end}")
     Double getTurnOverByTime(Integer status,LocalDateTime begin,LocalDateTime end);
+
 }

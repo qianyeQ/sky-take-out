@@ -4,8 +4,10 @@ import com.sky.constant.MessageConstant;
 import com.sky.entity.Orders;
 import com.sky.exception.OrderBusinessException;
 import com.sky.mapper.OrderMapper;
+import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.TurnoverReportVO;
+import com.sky.vo.UserReportVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 统计指定时间区间内营业额数据
@@ -55,5 +59,34 @@ public class ReportServiceImpl implements ReportService {
                 .dateList(resultDateList)
                 .turnoverList(resultTurnoverList.toString())
                 .build();
+    }
+
+    @Override
+    public UserReportVO getUserStatistics(LocalDate begin, LocalDate end) {
+        //当前集合用于存放从开始到结束范围内的每天的日期
+        List<LocalDate> dateList = new ArrayList<>();
+        dateList.add(begin);
+        while(!begin.equals(end)){
+            //日期计算，计算指定日期的后一天的对应日期
+            begin = begin.plusDays(1);
+            dateList.add(begin);
+        }
+        //遍历集合获取每天新增的用户数量以及用户总数
+        List<Integer> userCountList = new ArrayList<>();
+        List<Integer> newUserCountList = new ArrayList<>();
+        for (LocalDate date : dateList) {
+            LocalDateTime beginTime = LocalDateTime.of(date, LocalTime.MIN);
+            LocalDateTime endTime = LocalDateTime.of(date, LocalTime.MAX);
+            Integer userCount = userMapper.getUserCountByTime(endTime);
+            Integer newUserCount = userMapper.getByNewUserCountByTime(beginTime,endTime);
+            userCountList.add(userCount);
+            newUserCountList.add(newUserCount);
+        }
+        //把结果封装到对象
+        return (UserReportVO.builder()
+                .dateList(dateList.stream().map(date -> date.toString()).collect(Collectors.joining(",")))
+                .newUserList(newUserCountList.stream().map(newUser -> newUser.toString()).collect(Collectors.joining(",")))
+                .totalUserList(userCountList.stream().map(totalUser -> totalUser.toString()).collect(Collectors.joining(",")))
+                .build());
     }
 }
