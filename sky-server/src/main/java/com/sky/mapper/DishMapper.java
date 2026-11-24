@@ -10,12 +10,14 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface DishMapper {
 
     /**
      * 根据分类id查询菜品数量
+     *
      * @param categoryId
      * @return
      */
@@ -24,6 +26,7 @@ public interface DishMapper {
 
     /**
      * 插入菜品数据
+     *
      * @param dish
      */
     @AutoFill(value = OperationType.INSERT)
@@ -31,6 +34,7 @@ public interface DishMapper {
 
     /**
      * 菜品分页查询
+     *
      * @return
      */
     Page<DishVO> pageQuery(DishPageQueryDTO dishPageQueryDTO);
@@ -38,6 +42,7 @@ public interface DishMapper {
 
     /**
      * 根据主键查询菜品
+     *
      * @param id
      * @return
      */
@@ -46,12 +51,14 @@ public interface DishMapper {
 
     /**
      * 根据id批量删除数据
+     *
      * @param dishIds
      */
     void deleteByIds(List<Long> dishIds);
 
     /**
      * 修改菜品信息
+     *
      * @param dish
      */
     @AutoFill(OperationType.UPDATE)
@@ -59,8 +66,17 @@ public interface DishMapper {
 
     /**
      * 根据分类id获取菜品
+     *
      * @param dish
      * @return
      */
     List<Dish> list(Dish dish);
+
+    /**
+     * 根据条件统计菜品数量
+     *
+     * @param map
+     * @return
+     */
+    Integer countByMap(Map map);
 }
